@@ -1,0 +1,20 @@
+{
+  "name": "cuvs-node",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Node.js bindings for NVIDIA cuVS - GPU-accelerated vector search and clustering",
+  "main": "index.js",
+  "scripts": {
+    "build": "node-gyp rebuild",
+    "test": "node tests/test-all.mjs"
+  },
+  "dependencies": {
+    "node-addon-api": "^7.0.0"
+  },
+  "devDependencies": {
+    "node-gyp": "^10.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
