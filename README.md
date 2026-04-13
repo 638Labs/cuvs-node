@@ -1,6 +1,6 @@
 # cuvs-node
 
-Node.js bindings for [NVIDIA cuVS](https://github.com/rapidsai/cuvs) - GPU-accelerated vector search and clustering.
+Opensource Node.js bindings for [NVIDIA cuVS](https://github.com/rapidsai/cuvs) - GPU-accelerated vector search and clustering.
 
 Build, search, and serialize high-performance vector indexes directly from Node.js using NVIDIA GPUs.
 
