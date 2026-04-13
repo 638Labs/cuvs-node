@@ -11,13 +11,15 @@ You need a Linux machine with an NVIDIA GPU (A100, H100, or similar) and CUDA 12
 ### Step 1: Install Node.js
 
 ```bash
-# If root (RunPod):
-curl -fsSL https://nodejs.org/dist/v20.19.0/node-v20.19.0-linux-x64.tar.xz | tar -xJ -C /usr/local --strip-components=1
-npm install -g node-gyp
-
-# If non-root (Lambda, etc):
-curl -fsSL https://nodejs.org/dist/v20.19.0/node-v20.19.0-linux-x64.tar.xz | sudo tar -xJ -C /usr/local --strip-components=1
-sudo npm install -g node-gyp
+ARCH=$(uname -m)
+if [ "$ARCH" = "aarch64" ]; then
+    NODE_ARCH="arm64"
+else
+    NODE_ARCH="x64"
+fi
+curl -fsSL https://nodejs.org/dist/v20.19.0/node-v20.19.0-linux-${NODE_ARCH}.tar.xz | tar -xJ -C /usr/local --strip-components=1 2>/dev/null || \
+curl -fsSL https://nodejs.org/dist/v20.19.0/node-v20.19.0-linux-${NODE_ARCH}.tar.xz | sudo tar -xJ -C /usr/local --strip-components=1
+npm install -g node-gyp 2>/dev/null || sudo npm install -g node-gyp
 ```
 
 ### Step 2: Clone this repo

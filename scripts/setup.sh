@@ -40,7 +40,14 @@ if command -v node &> /dev/null; then
     echo "  Already installed: $(node --version)"
 else
     echo "  Installing Node.js 20 LTS..."
-    curl -fsSL https://nodejs.org/dist/v20.19.0/node-v20.19.0-linux-x64.tar.xz | tar -xJ -C /usr/local --strip-components=1
+    ARCH=$(uname -m)
+    if [ "$ARCH" = "aarch64" ]; then
+        NODE_ARCH="arm64"
+    else
+        NODE_ARCH="x64"
+    fi
+    curl -fsSL https://nodejs.org/dist/v20.19.0/node-v20.19.0-linux-${NODE_ARCH}.tar.xz | tar -xJ -C /usr/local --strip-components=1 2>/dev/null || \
+    curl -fsSL https://nodejs.org/dist/v20.19.0/node-v20.19.0-linux-${NODE_ARCH}.tar.xz | sudo tar -xJ -C /usr/local --strip-components=1
     echo "  Installed: $(node --version)"
 fi
 if ! command -v node-gyp &> /dev/null; then
