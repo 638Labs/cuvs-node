@@ -1,13 +1,38 @@
 {
   "name": "cuvs-node",
   "version": "0.0.1",
-  "private": true,
   "description": "Node.js bindings for NVIDIA cuVS - GPU-accelerated vector search and clustering",
   "main": "index.js",
   "scripts": {
     "build": "node-gyp rebuild",
     "test": "node tests/test-all.mjs"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/638Labs/cuvs-node.git"
+  },
+  "keywords": [
+    "nvidia",
+    "cuvs",
+    "gpu",
+    "vector-search",
+    "ann",
+    "nearest-neighbor",
+    "cagra",
+    "cuda"
+  ],
+  "author": "638Labs",
+  "license": "Apache-2.0",
+  "files": [
+    "src/",
+    "scripts/",
+    "tests/",
+    "examples/",
+    "binding.gyp",
+    "index.js",
+    "README.md",
+    "LICENSE"
+  ],
   "dependencies": {
     "node-addon-api": "^7.0.0"
   },
