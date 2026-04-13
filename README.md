@@ -24,8 +24,8 @@ sudo npm install -g node-gyp
 
 ```bash
 cd /workspace
-git clone https://github.com/skunkwerks2020/cuvs-node-001.git
-cd cuvs-node-001/cuvs-node
+git clone https://github.com/638Labs/cuvs-node.git
+cd cuvs-node
 ```
 
 ### Step 3: Run setup
