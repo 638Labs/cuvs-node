@@ -5,6 +5,7 @@ const tests = [
   'tests/test-cagra-build.mjs',
   'tests/test-cagra-search.mjs',
   'tests/test-cagra-serialize.mjs',
+  'tests/test-cagra-chunked.mjs',
   'tests/test-ivf-flat.mjs',
   'tests/test-ivf-pq.mjs',
   'tests/test-brute-force.mjs',

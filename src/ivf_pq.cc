@@ -9,6 +9,7 @@ Napi::FunctionReference IvfPqIndex::constructor_;
 Napi::Object IvfPqIndex::Init(Napi::Env env, Napi::Object exports) {
   Napi::Function func = DefineClass(env, "IvfPqIndex", {
     StaticMethod("build", &IvfPqIndex::Build),
+    StaticMethod("buildChunked", &IvfPqIndex::BuildChunked),
     InstanceMethod("search", &IvfPqIndex::Search),
     InstanceMethod("serialize", &IvfPqIndex::Serialize),
     StaticMethod("deserialize", &IvfPqIndex::Deserialize),
@@ -60,6 +61,88 @@ Napi::Value IvfPqIndex::Build(const Napi::CallbackInfo& info) {
 
   size_t length = 0;
   float* d_data = CopyToDevice(env, dataset, &length);
+  if (d_data == nullptr) {
+    return env.Undefined();
+  }
+
+  int64_t shape[2] = { rows, cols };
+  DLManagedTensor tensor = {};
+  tensor.dl_tensor.data = d_data;
+  tensor.dl_tensor.device.device_type = kDLCUDA;
+  tensor.dl_tensor.device.device_id = 0;
+  tensor.dl_tensor.ndim = 2;
+  tensor.dl_tensor.dtype.code = kDLFloat;
+  tensor.dl_tensor.dtype.bits = 32;
+  tensor.dl_tensor.dtype.lanes = 1;
+  tensor.dl_tensor.shape = shape;
+  tensor.dl_tensor.strides = nullptr;
+  tensor.dl_tensor.byte_offset = 0;
+
+  cuvsIvfPqIndexParams_t params;
+  if (cuvsIvfPqIndexParamsCreate(&params) != CUVS_SUCCESS) {
+    cudaFree(d_data);
+    Napi::Error::New(env, "cuvsIvfPqIndexParamsCreate failed").ThrowAsJavaScriptException();
+    return env.Undefined();
+  }
+
+  if (opts.Has("nLists")) {
+    params->n_lists = opts.Get("nLists").As<Napi::Number>().Uint32Value();
+  }
+  if (opts.Has("pqBits")) {
+    params->pq_bits = opts.Get("pqBits").As<Napi::Number>().Uint32Value();
+  }
+  if (opts.Has("pqDim")) {
+    params->pq_dim = opts.Get("pqDim").As<Napi::Number>().Uint32Value();
+  }
+
+  cuvsIvfPqIndex_t index;
+  if (cuvsIvfPqIndexCreate(&index) != CUVS_SUCCESS) {
+    cuvsIvfPqIndexParamsDestroy(params);
+    cudaFree(d_data);
+    Napi::Error::New(env, "cuvsIvfPqIndexCreate failed").ThrowAsJavaScriptException();
+    return env.Undefined();
+  }
+
+  cuvsError_t build_err = cuvsIvfPqBuild(resources->GetResource(), params, &tensor, index);
+  cuvsIvfPqIndexParamsDestroy(params);
+
+  if (build_err != CUVS_SUCCESS) {
+    cuvsIvfPqIndexDestroy(index);
+    cudaFree(d_data);
+    Napi::Error::New(env, "cuvsIvfPqBuild failed").ThrowAsJavaScriptException();
+    return env.Undefined();
+  }
+
+  Napi::Object obj = constructor_.New({});
+  IvfPqIndex* wrapper = Napi::ObjectWrap<IvfPqIndex>::Unwrap(obj);
+  wrapper->index_ = index;
+  wrapper->owns_index_ = true;
+  wrapper->d_dataset_ = d_data;
+  return obj;
+}
+
+Napi::Value IvfPqIndex::BuildChunked(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() < 3 || !info[0].IsObject() || !info[1].IsArray() || !info[2].IsObject()) {
+    Napi::TypeError::New(env, "Expected (Resources, Float32Array[], { rows, cols, nLists?, pqBits?, pqDim? })").ThrowAsJavaScriptException();
+    return env.Undefined();
+  }
+
+  Resources* resources = Napi::ObjectWrap<Resources>::Unwrap(info[0].As<Napi::Object>());
+  Napi::Array chunks = info[1].As<Napi::Array>();
+  Napi::Object opts = info[2].As<Napi::Object>();
+
+  int64_t rows = opts.Get("rows").As<Napi::Number>().Int64Value();
+  int64_t cols = opts.Get("cols").As<Napi::Number>().Int64Value();
+
+  if (rows <= 0 || cols <= 0) {
+    Napi::RangeError::New(env, "rows and cols must be positive").ThrowAsJavaScriptException();
+    return env.Undefined();
+  }
+
+  size_t expected = (size_t)rows * (size_t)cols;
+  float* d_data = CopyChunksToDevice(env, chunks, expected);
   if (d_data == nullptr) {
     return env.Undefined();
   }

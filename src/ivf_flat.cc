@@ -9,6 +9,7 @@ Napi::FunctionReference IvfFlatIndex::constructor_;
 Napi::Object IvfFlatIndex::Init(Napi::Env env, Napi::Object exports) {
   Napi::Function func = DefineClass(env, "IvfFlatIndex", {
     StaticMethod("build", &IvfFlatIndex::Build),
+    StaticMethod("buildChunked", &IvfFlatIndex::BuildChunked),
     InstanceMethod("search", &IvfFlatIndex::Search),
     InstanceMethod("serialize", &IvfFlatIndex::Serialize),
     StaticMethod("deserialize", &IvfFlatIndex::Deserialize),
@@ -60,6 +61,82 @@ Napi::Value IvfFlatIndex::Build(const Napi::CallbackInfo& info) {
 
   size_t length = 0;
   float* d_data = CopyToDevice(env, dataset, &length);
+  if (d_data == nullptr) {
+    return env.Undefined();
+  }
+
+  int64_t shape[2] = { rows, cols };
+  DLManagedTensor tensor = {};
+  tensor.dl_tensor.data = d_data;
+  tensor.dl_tensor.device.device_type = kDLCUDA;
+  tensor.dl_tensor.device.device_id = 0;
+  tensor.dl_tensor.ndim = 2;
+  tensor.dl_tensor.dtype.code = kDLFloat;
+  tensor.dl_tensor.dtype.bits = 32;
+  tensor.dl_tensor.dtype.lanes = 1;
+  tensor.dl_tensor.shape = shape;
+  tensor.dl_tensor.strides = nullptr;
+  tensor.dl_tensor.byte_offset = 0;
+
+  cuvsIvfFlatIndexParams_t params;
+  if (cuvsIvfFlatIndexParamsCreate(&params) != CUVS_SUCCESS) {
+    cudaFree(d_data);
+    Napi::Error::New(env, "cuvsIvfFlatIndexParamsCreate failed").ThrowAsJavaScriptException();
+    return env.Undefined();
+  }
+
+  if (opts.Has("nLists")) {
+    params->n_lists = opts.Get("nLists").As<Napi::Number>().Uint32Value();
+  }
+
+  cuvsIvfFlatIndex_t index;
+  if (cuvsIvfFlatIndexCreate(&index) != CUVS_SUCCESS) {
+    cuvsIvfFlatIndexParamsDestroy(params);
+    cudaFree(d_data);
+    Napi::Error::New(env, "cuvsIvfFlatIndexCreate failed").ThrowAsJavaScriptException();
+    return env.Undefined();
+  }
+
+  cuvsError_t build_err = cuvsIvfFlatBuild(resources->GetResource(), params, &tensor, index);
+  cuvsIvfFlatIndexParamsDestroy(params);
+
+  if (build_err != CUVS_SUCCESS) {
+    cuvsIvfFlatIndexDestroy(index);
+    cudaFree(d_data);
+    Napi::Error::New(env, "cuvsIvfFlatBuild failed").ThrowAsJavaScriptException();
+    return env.Undefined();
+  }
+
+  Napi::Object obj = constructor_.New({});
+  IvfFlatIndex* wrapper = Napi::ObjectWrap<IvfFlatIndex>::Unwrap(obj);
+  wrapper->index_ = index;
+  wrapper->owns_index_ = true;
+  wrapper->d_dataset_ = d_data;
+  return obj;
+}
+
+Napi::Value IvfFlatIndex::BuildChunked(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() < 3 || !info[0].IsObject() || !info[1].IsArray() || !info[2].IsObject()) {
+    Napi::TypeError::New(env, "Expected (Resources, Float32Array[], { rows, cols, nLists? })").ThrowAsJavaScriptException();
+    return env.Undefined();
+  }
+
+  Resources* resources = Napi::ObjectWrap<Resources>::Unwrap(info[0].As<Napi::Object>());
+  Napi::Array chunks = info[1].As<Napi::Array>();
+  Napi::Object opts = info[2].As<Napi::Object>();
+
+  int64_t rows = opts.Get("rows").As<Napi::Number>().Int64Value();
+  int64_t cols = opts.Get("cols").As<Napi::Number>().Int64Value();
+
+  if (rows <= 0 || cols <= 0) {
+    Napi::RangeError::New(env, "rows and cols must be positive").ThrowAsJavaScriptException();
+    return env.Undefined();
+  }
+
+  size_t expected = (size_t)rows * (size_t)cols;
+  float* d_data = CopyChunksToDevice(env, chunks, expected);
   if (d_data == nullptr) {
     return env.Undefined();
   }

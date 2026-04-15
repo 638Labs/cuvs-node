@@ -13,6 +13,7 @@ class CagraIndex : public Napi::ObjectWrap<CagraIndex> {
 
  private:
   static Napi::Value Build(const Napi::CallbackInfo& info);
+  static Napi::Value BuildChunked(const Napi::CallbackInfo& info);
   Napi::Value Search(const Napi::CallbackInfo& info);
   Napi::Value Serialize(const Napi::CallbackInfo& info);
   static Napi::Value Deserialize(const Napi::CallbackInfo& info);
