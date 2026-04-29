@@ -48,9 +48,9 @@ Status: ALL TESTS PASSED
 
 If you see that, everything is working.
 
-### Step 4: Development
+### Usage
 
-Setup is complete. To start working on the code, activate the environment:
+Once setup is complete (see above), to start working on the code, activate the environment:
 
 ```bash
 source ~/miniforge3/etc/profile.d/conda.sh
