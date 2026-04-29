@@ -1,5 +1,7 @@
 # cuvs-node
 
+[![npm version](https://img.shields.io/npm/v/cuvs-node.svg)](https://www.npmjs.com/package/cuvs-node)
+
 Opensource Node.js bindings for [NVIDIA cuVS](https://github.com/rapidsai/cuvs) - GPU-accelerated vector search and clustering.
 
 Build, search, and serialize high-performance vector indexes directly from Node.js using NVIDIA GPUs.
