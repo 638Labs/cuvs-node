@@ -217,7 +217,7 @@ export LD_LIBRARY_PATH="$CONDA_PREFIX/lib:$LD_LIBRARY_PATH"
 
 ## License
 
-cuvs-node is opensourced under the terms of the (Apache-2.0 license)[https://www.apache.org/licenses/LICENSE-2.0]
+cuvs-node is opensourced under the terms of the [Apache-2.0 license](https://www.apache.org/licenses/LICENSE-2.0)
 
 ## Contributing
 
@@ -225,4 +225,4 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/638lab
 
 Considering the break neck speed of AI (and how some ppl now contribute using AI, so they get to overwhelm us peasants who type with our fingers code and README files the old fashioned way), the evolution of AI projects and opinionated ways to approach data/vectors/search, please remain civil and professional in all interactions. 
 
-This project is intended to foster innovation while being a safe, welcoming space for collaboration; contributors are expected to adhere to the (Contributor Covenant)[https://www.contributor-covenant.org/] code of conduct.
+This project is intended to foster innovation while being a safe, welcoming space for collaboration; contributors are expected to adhere to the [Contributor Covenant](https://www.contributor-covenant.org/) code of conduct.
