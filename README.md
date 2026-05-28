@@ -3,7 +3,6 @@
 [![npm version](https://img.shields.io/npm/v/cuvs-node.svg)](https://www.npmjs.com/package/cuvs-node)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-
 Opensource Node.js bindings for [NVIDIA cuVS](https://github.com/rapidsai/cuvs) - GPU-accelerated vector search and clustering.
 
 Build, search, and serialize high-performance vector indexes directly from Node.js using NVIDIA GPUs.
@@ -17,7 +16,9 @@ Build, search, and serialize high-performance vector indexes directly from Node.
 - Linux x86_64
 - NVIDIA GPU with CUDA 12.x driver installed (`nvidia-smi` works)
 
-### Quick install (prebuilt binary, recommended)
+## 2 Ways to install: Prebuilt Binaries OR From Source
+
+### Installation method 1: Prebuilt Binaries (recommended)
 
 In addition to the requirements above, you need a recent libstdc++ on your system:
 
@@ -42,7 +43,9 @@ node -e "const { Resources } = require('cuvs-node'); const r = new Resources(); 
 
 You should see `ok`.
 
-### Build from source (fallback)
+---
+
+### ### Installation method 2: Build from source
 
 Use this only if the prebuilt binary won't work on your machine — older libstdc++, a build pipeline that disallows binary downloads, or you're hacking on the C++.
 
