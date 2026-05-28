@@ -11,7 +11,7 @@ Build, search, and serialize high-performance vector indexes directly from Node.
 
 ## Install
 
-### Requirements (true for any install path)
+### General Requirements
 
 - Linux x86_64
 - NVIDIA GPU with CUDA 12.x driver installed (`nvidia-smi` works)
