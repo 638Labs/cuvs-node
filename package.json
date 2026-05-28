@@ -1,10 +1,12 @@
 {
   "name": "cuvs-node",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Opensource Node.js bindings for NVIDIA cuVS - GPU-accelerated vector search and clustering",
   "main": "index.js",
   "scripts": {
+    "install": "node-gyp-build",
     "build": "node-gyp rebuild",
+    "prebuild": "prebuildify --napi --strip",
     "test": "node tests/test-all.mjs"
   },
   "repository": {
@@ -28,16 +30,20 @@
     "scripts/",
     "tests/",
     "examples/",
+    "prebuilds/",
     "binding.gyp",
     "index.js",
     "README.md",
     "LICENSE"
   ],
   "dependencies": {
-    "node-addon-api": "^7.0.0"
+    "node-addon-api": "^7.0.0",
+    "node-gyp-build": "^4.8.0"
   },
   "devDependencies": {
-    "node-gyp": "^10.0.0"
+    "hnswlib-node": "^3.0.0",
+    "node-gyp": "^10.0.0",
+    "prebuildify": "^6.0.0"
   },
   "engines": {
     "node": ">=20.0.0"

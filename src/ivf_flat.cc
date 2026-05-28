@@ -89,6 +89,14 @@ Napi::Value IvfFlatIndex::Build(const Napi::CallbackInfo& info) {
     params->n_lists = opts.Get("nLists").As<Napi::Number>().Uint32Value();
   }
 
+  cuvsDistanceType metric = ResolveMetric(env, opts);
+  if (env.IsExceptionPending()) {
+    cuvsIvfFlatIndexParamsDestroy(params);
+    cudaFree(d_data);
+    return env.Undefined();
+  }
+  params->metric = metric;
+
   cuvsIvfFlatIndex_t index;
   if (cuvsIvfFlatIndexCreate(&index) != CUVS_SUCCESS) {
     cuvsIvfFlatIndexParamsDestroy(params);
@@ -164,6 +172,14 @@ Napi::Value IvfFlatIndex::BuildChunked(const Napi::CallbackInfo& info) {
   if (opts.Has("nLists")) {
     params->n_lists = opts.Get("nLists").As<Napi::Number>().Uint32Value();
   }
+
+  cuvsDistanceType metric = ResolveMetric(env, opts);
+  if (env.IsExceptionPending()) {
+    cuvsIvfFlatIndexParamsDestroy(params);
+    cudaFree(d_data);
+    return env.Undefined();
+  }
+  params->metric = metric;
 
   cuvsIvfFlatIndex_t index;
   if (cuvsIvfFlatIndexCreate(&index) != CUVS_SUCCESS) {

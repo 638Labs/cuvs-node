@@ -95,6 +95,14 @@ Napi::Value IvfPqIndex::Build(const Napi::CallbackInfo& info) {
     params->pq_dim = opts.Get("pqDim").As<Napi::Number>().Uint32Value();
   }
 
+  cuvsDistanceType metric = ResolveMetric(env, opts);
+  if (env.IsExceptionPending()) {
+    cuvsIvfPqIndexParamsDestroy(params);
+    cudaFree(d_data);
+    return env.Undefined();
+  }
+  params->metric = metric;
+
   cuvsIvfPqIndex_t index;
   if (cuvsIvfPqIndexCreate(&index) != CUVS_SUCCESS) {
     cuvsIvfPqIndexParamsDestroy(params);
@@ -176,6 +184,14 @@ Napi::Value IvfPqIndex::BuildChunked(const Napi::CallbackInfo& info) {
   if (opts.Has("pqDim")) {
     params->pq_dim = opts.Get("pqDim").As<Napi::Number>().Uint32Value();
   }
+
+  cuvsDistanceType metric = ResolveMetric(env, opts);
+  if (env.IsExceptionPending()) {
+    cuvsIvfPqIndexParamsDestroy(params);
+    cudaFree(d_data);
+    return env.Undefined();
+  }
+  params->metric = metric;
 
   cuvsIvfPqIndex_t index;
   if (cuvsIvfPqIndexCreate(&index) != CUVS_SUCCESS) {

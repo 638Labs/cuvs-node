@@ -9,7 +9,9 @@ const tests = [
   'tests/test-ivf-flat.mjs',
   'tests/test-ivf-pq.mjs',
   'tests/test-brute-force.mjs',
+  'tests/test-metrics.mjs',
   'tests/test-hnsw.mjs',
+  'tests/test-hnswlib-compat.mjs',
   'tests/test-benchmark.mjs',
 ]
 

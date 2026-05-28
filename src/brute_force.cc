@@ -59,10 +59,8 @@ Napi::Value BruteForceIndex::Build(const Napi::CallbackInfo& info) {
     return env.Undefined();
   }
 
-  cuvsDistanceType metric = L2Expanded;
-  if (opts.Has("metric")) {
-    metric = (cuvsDistanceType)opts.Get("metric").As<Napi::Number>().Uint32Value();
-  }
+  cuvsDistanceType metric = ResolveMetric(env, opts);
+  if (env.IsExceptionPending()) return env.Undefined();
   float metric_arg = 0.0f;
   if (opts.Has("metricArg")) {
     metric_arg = opts.Get("metricArg").As<Napi::Number>().FloatValue();
@@ -131,10 +129,8 @@ Napi::Value BruteForceIndex::BuildChunked(const Napi::CallbackInfo& info) {
     return env.Undefined();
   }
 
-  cuvsDistanceType metric = L2Expanded;
-  if (opts.Has("metric")) {
-    metric = (cuvsDistanceType)opts.Get("metric").As<Napi::Number>().Uint32Value();
-  }
+  cuvsDistanceType metric = ResolveMetric(env, opts);
+  if (env.IsExceptionPending()) return env.Undefined();
   float metric_arg = 0.0f;
   if (opts.Has("metricArg")) {
     metric_arg = opts.Get("metricArg").As<Napi::Number>().FloatValue();

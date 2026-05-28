@@ -87,6 +87,14 @@ Napi::Value CagraIndex::Build(const Napi::CallbackInfo& info) {
     return env.Undefined();
   }
 
+  cuvsDistanceType metric = ResolveMetric(env, opts);
+  if (env.IsExceptionPending()) {
+    cuvsCagraIndexParamsDestroy(params);
+    cudaFree(d_data);
+    return env.Undefined();
+  }
+  params->metric = metric;
+
   cuvsCagraIndex_t index;
   if (cuvsCagraIndexCreate(&index) != CUVS_SUCCESS) {
     cuvsCagraIndexParamsDestroy(params);
@@ -159,6 +167,14 @@ Napi::Value CagraIndex::BuildChunked(const Napi::CallbackInfo& info) {
     Napi::Error::New(env, "cuvsCagraIndexParamsCreate failed").ThrowAsJavaScriptException();
     return env.Undefined();
   }
+
+  cuvsDistanceType metric = ResolveMetric(env, opts);
+  if (env.IsExceptionPending()) {
+    cuvsCagraIndexParamsDestroy(params);
+    cudaFree(d_data);
+    return env.Undefined();
+  }
+  params->metric = metric;
 
   cuvsCagraIndex_t index;
   if (cuvsCagraIndexCreate(&index) != CUVS_SUCCESS) {
