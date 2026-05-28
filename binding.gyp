@@ -20,7 +20,8 @@
       "libraries": [
         "-L<!@(echo $CONDA_PREFIX/lib)",
         "-lcuvs_c",
-        "-lcudart"
+        "-lcudart",
+        "-Wl,-rpath,'$$ORIGIN'"
       ],
       "cflags!": ["-fno-exceptions"],
       "cflags_cc!": ["-fno-exceptions"],

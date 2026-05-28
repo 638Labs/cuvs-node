@@ -7,11 +7,44 @@ Opensource Node.js bindings for [NVIDIA cuVS](https://github.com/rapidsai/cuvs) 
 
 Build, search, and serialize high-performance vector indexes directly from Node.js using NVIDIA GPUs.
 
-## Getting Started
+> **NEW in v0.0.4 — Prebuilt binaries.** `npm install cuvs-node` now ships the compiled addon plus cuVS, CUDA runtime, cuBLAS, cuSOLVER, cuSPARSE, cuRAND, NCCL, and OpenMP. No conda, no separate cuVS install, no compile step. See [Quick install](#quick-install-prebuilt-binary-recommended) below.
 
-You need a Linux machine with an NVIDIA GPU (A100, H100, or similar) and CUDA 12.x drivers. Cloud GPU instances from RunPod, Lambda, or similar providers work.
+## Install
 
-### Step 1: Install Node.js
+### Requirements (true for any install path)
+
+- Linux x86_64
+- NVIDIA GPU with CUDA 12.x driver installed (`nvidia-smi` works)
+
+### Quick install (prebuilt binary, recommended)
+
+In addition to the requirements above, you need a recent libstdc++ on your system:
+
+- Ubuntu 24.04, Debian 13, RHEL/Rocky 9, or newer → built-in, nothing to do.
+- Ubuntu 22.04, Debian 12 → run `sudo apt install -y libstdc++6` (recent point releases include the needed symbols).
+- To check: `strings /usr/lib/x86_64-linux-gnu/libstdc++.so.6 | grep -E 'GLIBCXX_3\.4\.3[1-9]' | head -1` should print at least `GLIBCXX_3.4.31`.
+
+Then:
+
+```bash
+npm install cuvs-node
+```
+
+The package ships a ~2.3 GB prebuilt binary with cuVS, CUDA runtime, cuBLAS, cuSOLVER, cuSPARSE, cuRAND, NCCL, and OpenMP bundled. No conda, no separate cuVS install, no compilation.
+
+Smoke test:
+
+```bash
+node -e "const { Resources } = require('cuvs-node'); const r = new Resources(); r.dispose(); console.log('ok')"
+```
+
+You should see `ok`.
+
+### Build from source (fallback)
+
+Use this only if the prebuilt binary won't work on your machine — older libstdc++, a build pipeline that disallows binary downloads, or you're hacking on the C++.
+
+#### Step 1: Install Node.js
 
 ```bash
 ARCH=$(uname -m)
@@ -25,7 +58,7 @@ curl -fsSL https://nodejs.org/dist/v20.19.0/node-v20.19.0-linux-${NODE_ARCH}.tar
 npm install -g node-gyp 2>/dev/null || sudo npm install -g node-gyp
 ```
 
-### Step 2: Clone this repo
+#### Step 2: Clone this repo
 
 ```bash
 cd /workspace
@@ -33,14 +66,14 @@ git clone https://github.com/638Labs/cuvs-node.git
 cd cuvs-node
 ```
 
-### Step 3: Run setup
+#### Step 3: Run setup
 
 ```bash
 chmod +x scripts/*.sh
 ./scripts/setup.sh
 ```
 
-This installs conda, cuVS, builds the native addon, and runs the full test suite. Takes about 15-20 minutes on a fresh instance. On a previously configured instance, it skips what is already installed and goes straight to build and verify.
+This installs conda, cuVS, builds the native addon, and runs the full test suite. Takes a couple minutes on a typical GPU instance.
 
 When it finishes, you should see:
 
@@ -49,11 +82,9 @@ When it finishes, you should see:
 Status: ALL TESTS PASSED
 ```
 
-If you see that, everything is working.
+#### Source-build dev workflow
 
-### Usage
-
-Once setup is complete (see above), to start working on the code, activate the environment:
+Activate the environment:
 
 ```bash
 source ~/miniforge3/etc/profile.d/conda.sh
@@ -75,8 +106,6 @@ conda deactivate && conda deactivate
 unset LD_LIBRARY_PATH
 git add -A && git commit -m "your message" && git push
 ```
-
-Activate the environment before running any examples (see Step 4).
 
 ## Quick Example
 
