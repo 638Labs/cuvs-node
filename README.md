@@ -29,6 +29,8 @@ OR
 - Ubuntu 22.04, Debian 12 → run `sudo apt install -y libstdc++6`  
   (recent point releases include the needed symbols).
 
+---
+
 Verify if you have it: 
 
 `strings /usr/lib/x86_64-linux-gnu/libstdc++.so.6 | grep -E 'GLIBCXX_3\.4\.3[1-9]' | head -1` 
