@@ -3,6 +3,12 @@
 [![npm version](https://img.shields.io/npm/v/cuvs-node.svg)](https://www.npmjs.com/package/cuvs-node)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
+
+## SEE Requirements below
+```bash
+npm install cuvs-node
+```
+
 Opensource Node.js bindings for [NVIDIA cuVS](https://github.com/rapidsai/cuvs) - GPU-accelerated vector search and clustering.
 
 Build, search, and serialize high-performance vector indexes directly from Node.js using NVIDIA GPUs.
@@ -20,9 +26,10 @@ Build, search, and serialize high-performance vector indexes directly from Node.
 
 In addition to the requirements above, you need a recent libstdc++ on your system:
 
-- Ubuntu 24.04, Debian 13, RHEL/Rocky 9, or newer → built-in, nothing to do.
-- Ubuntu 22.04, Debian 12 → run `sudo apt install -y libstdc++6` (recent point releases include the needed symbols).
-- To check: `strings /usr/lib/x86_64-linux-gnu/libstdc++.so.6 | grep -E 'GLIBCXX_3\.4\.3[1-9]' | head -1` should print at least `GLIBCXX_3.4.31`.
+- Ubuntu 24.04, Debian 13, RHEL/Rocky 9, or newer → built-in
+- Ubuntu 22.04, Debian 12 → run `sudo apt install -y libstdc++6`  
+  (recent point releases include the needed symbols).
+- Verify: `strings /usr/lib/x86_64-linux-gnu/libstdc++.so.6 | grep -E 'GLIBCXX_3\.4\.3[1-9]' | head -1` should print at least `GLIBCXX_3.4.31`.
 
 Then:
 
