@@ -20,12 +20,21 @@ Build, search, and serialize high-performance vector indexes directly from Node.
 
 ### Installation method 1: Prebuilt Binaries (recommended)
 
-In addition to the requirements above, you need a recent libstdc++ on your system:
+In addition to the requirements above, you need a recent libstdc++ on your system.
 
-- Ubuntu 24.04, Debian 13, RHEL/Rocky 9, or newer → built-in
+- Ubuntu 24.04, Debian 13, RHEL/Rocky 9, or newer → built-in, nothing to do.
+  
+OR  
+  
 - Ubuntu 22.04, Debian 12 → run `sudo apt install -y libstdc++6`  
   (recent point releases include the needed symbols).
-- Verify: `strings /usr/lib/x86_64-linux-gnu/libstdc++.so.6 | grep -E 'GLIBCXX_3\.4\.3[1-9]' | head -1` should print at least `GLIBCXX_3.4.31`.
+
+Verify if you have it: 
+
+`strings /usr/lib/x86_64-linux-gnu/libstdc++.so.6 | grep -E 'GLIBCXX_3\.4\.3[1-9]' | head -1` 
+- should print at least `GLIBCXX_3.4.31`.
+
+If you do, then proceed to install:
 
 Then:
 
