@@ -7,7 +7,7 @@ Opensource Node.js bindings for [NVIDIA cuVS](https://github.com/rapidsai/cuvs) 
 
 Build, search, and serialize high-performance vector indexes directly from Node.js using NVIDIA GPUs.
 
-> **NEW in v0.0.4 — Prebuilt binaries.** `npm install cuvs-node` now ships the compiled addon plus cuVS, CUDA runtime, cuBLAS, cuSOLVER, cuSPARSE, cuRAND, NCCL, and OpenMP. No conda, no separate cuVS install, no compile step. See [Quick install](#quick-install-prebuilt-binary-recommended) below.
+> **NEW in v0.0.5 — Prebuilt binaries.** `npm install cuvs-node` now downloads a prebuilt addon plus cuVS, CUDA runtime, cuBLAS, cuSOLVER, cuSPARSE, cuRAND, NCCL, and OpenMP. No conda, no separate cuVS install, no compile step. The binary (~1.8 GB compressed) is fetched once from GitHub Releases at install time. See [Install](#install) below.
 
 ## Install
 
@@ -44,7 +44,7 @@ Then:
 npm install cuvs-node
 ```
 
-The package ships a ~2.3 GB prebuilt binary with cuVS, CUDA runtime, cuBLAS, cuSOLVER, cuSPARSE, cuRAND, NCCL, and OpenMP bundled. No conda, no separate cuVS install, no compilation.
+During install, `npm` downloads ~1.8 GB of bundled binaries from this repo's GitHub Releases (cuVS, CUDA runtime, cuBLAS, cuSOLVER, cuSPARSE, cuRAND, NCCL, OpenMP). One-time download per install. No conda, no separate cuVS install, no compilation.
 
 Smoke test:
 
