@@ -1,10 +1,10 @@
 {
   "name": "cuvs-node",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Opensource Node.js bindings for NVIDIA cuVS - GPU-accelerated vector search and clustering",
   "main": "index.js",
   "scripts": {
-    "postinstall": "node scripts/install-binaries.cjs",
+    "install": "node scripts/install-binaries.cjs",
     "build": "node-gyp rebuild",
     "prebuild": "prebuildify --napi --strip && bash scripts/bundle-libs.sh",
     "test": "node tests/test-all.mjs"

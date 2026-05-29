@@ -11,8 +11,12 @@ const https = require('https')
 const path = require('path')
 const { execSync } = require('child_process')
 
-const pkg = require('../package.json')
-const VERSION = pkg.version
+// Pinned to the GitHub Release tag that hosts the binary tarball. Decouples
+// the binary release cycle from the npm wrapper version, so small wrapper
+// fixes don't require re-uploading 1.8 GB. Bump this only when the binary is
+// rebuilt and uploaded to a new tag.
+const BINARY_RELEASE_TAG = 'v0.0.5'
+
 const PLATFORM = process.platform
 const ARCH = process.arch
 
@@ -33,7 +37,7 @@ if (fs.existsSync(MARKER)) {
     process.exit(0)
 }
 
-const URL = `https://github.com/638Labs/cuvs-node/releases/download/v${VERSION}/prebuilds-linux-x64.tar.gz`
+const URL = `https://github.com/638Labs/cuvs-node/releases/download/${BINARY_RELEASE_TAG}/prebuilds-linux-x64.tar.gz`
 const TARBALL = path.join(__dirname, '..', 'prebuilds-download.tar.gz')
 
 fs.mkdirSync(PREBUILDS_DIR, { recursive: true })
